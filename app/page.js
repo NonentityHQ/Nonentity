@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { AnimatePresence, motion, useScroll } from "framer-motion";
-import { Smooth, Cursor, Preloader } from "../components/Fx";
+import { Smooth, Preloader } from "../components/Fx";
 import { Navbar, Hero, Stats, Work, Services, Approach, Team, Tech, Reviews, Blog, Contact, Footer } from "../components/sections";
 
 export default function Page() {
@@ -12,7 +12,7 @@ export default function Page() {
   useEffect(() => { document.documentElement.dataset.theme = dark ? "dark" : "light"; }, [dark]);
   return (
     <>
-      <Smooth /><Cursor />
+      <Smooth />
       <AnimatePresence>{!ready && <Preloader onDone={done} />}</AnimatePresence>
       <motion.div className="progress" style={{ scaleX: scrollYProgress }} />
       <Navbar dark={dark} setDark={setDark} ready={ready} />

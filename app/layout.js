@@ -1,8 +1,8 @@
-import { Inter, Playfair_Display } from "next/font/google";
+import { Instrument_Sans, Fraunces } from "next/font/google";
 import "./globals.css";
 
-const sans = Inter({ subsets: ["latin"], variable: "--sans" });
-const serif = Playfair_Display({ subsets: ["latin"], variable: "--serif", style: ["normal", "italic"] });
+const sans = Instrument_Sans({ subsets: ["latin"], variable: "--sans" });
+const serif = Fraunces({ subsets: ["latin"], variable: "--serif", style: ["normal", "italic"] });
 
 export const metadata = {
   title: "Nonentity — Independent Software Studio",

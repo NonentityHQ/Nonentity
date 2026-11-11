@@ -5,8 +5,7 @@ import {
   ArrowUpRight, Play, Moon, Sun, ChevronDown, ChevronLeft, ChevronRight, ArrowLeft, ArrowRight,
   Github, Linkedin, Instagram, Youtube, ExternalLink, Quote, Heart, Menu, X, Check, MoreHorizontal,
 } from "lucide-react";
-import { Tilt, Magnetic, S3D, Words, Count, Side } from "./ui";
-import { Particles } from "./Fx";
+import { Tilt, Magnetic, S3D, Words, Count, CountText, Side, rv, useLite } from "./ui";
 import { NAV, STATS, PROJECTS, SERVICES, STEPS, TEAM, TECH, REVIEWS, POSTS } from "../lib/data";
 
 const ease = [0.2, 0.7, 0.2, 1];
@@ -50,6 +49,7 @@ function Logo3D() {
 }
 
 export function Hero({ ready }) {
+  const lite = useLite();
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [0, 700], [0, 140]);
   const rz = useTransform(scrollY, [0, 700], [0, 30]);
@@ -58,7 +58,6 @@ export function Hero({ ready }) {
   const line = { hidden: { y: "115%" }, show: { y: 0 } };
   return (
     <div className="hero-wrap" id="home">
-      <Particles />
       <div className="wrap hero">
         <div>
           <motion.div className="eyebrow" initial={{ opacity: 0, x: -20 }} animate={ready ? { opacity: 1, x: 0 } : {}} transition={{ delay: 0.1 }}>Independent Software Studio</motion.div>
@@ -66,7 +65,7 @@ export function Hero({ ready }) {
             {["Engineering digital", "products that create"].map((t) => (
               <span className="mask" key={t}><motion.span variants={line} transition={{ duration: 0.9, ease }}>{t}</motion.span></span>
             ))}
-            <span className="mask"><motion.em className="shine" variants={line} transition={{ duration: 0.9, ease }}>real impact.</motion.em></span>
+            <span className="mask"><motion.em variants={line} transition={{ duration: 0.9, ease }}>real impact.</motion.em></span>
           </motion.h1>
           <motion.p className="lead" initial={{ opacity: 0, y: 20 }} animate={ready ? { opacity: 1, y: 0 } : {}} transition={{ delay: 0.9 }}>
             We design, build and scale modern software products, AI systems and automation for education, business and growing teams.
@@ -77,7 +76,7 @@ export function Hero({ ready }) {
           </motion.div>
           <motion.div className="chips" initial={{ opacity: 0 }} animate={ready ? { opacity: 1 } : {}} transition={{ delay: 1.3 }}>PRODUCTS &nbsp;•&nbsp; AI &nbsp;•&nbsp; AUTOMATION &nbsp;•&nbsp; SAAS</motion.div>
         </div>
-        <motion.div className="stage" style={{ y, rotateZ: rz, rotateY: ry }} initial={{ opacity: 0, scale: 0.6 }} animate={ready ? { opacity: 1, scale: 1 } : {}} transition={{ duration: 1.2, delay: 0.3, ease }}>
+        <motion.div className="stage" style={lite ? undefined : { y, rotateZ: rz, rotateY: ry }} initial={{ opacity: 0, scale: 0.6 }} animate={ready ? { opacity: 1, scale: 1 } : {}} transition={{ duration: 1.2, delay: 0.3, ease }}>
           <div className="orbit"><i /></div><div className="orbit b"><i /></div>
           <Logo3D />
         </motion.div>
@@ -87,10 +86,10 @@ export function Hero({ ready }) {
 }
 
 export function Stats() {
+  const lite = useLite();
   return (
     <div className="wrap">
-      <motion.div className="stats glow-b" initial={{ opacity: 0, y: 50, rotateX: 20 }} whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-        viewport={{ once: true }} transition={{ duration: 0.9, ease }} style={{ transformPerspective: 1200 }}>
+      <motion.div className="stats glow-b" {...rv(lite, { opacity: 0, y: 50, rotateX: 20 })}>
         {STATS.map(([Icon, n, s, l], i) => (
           <motion.div className="stat" key={l} whileHover={{ y: -4 }}>
             <motion.span initial={{ scale: 0, rotate: -90 }} whileInView={{ scale: 1, rotate: 0 }} viewport={{ once: true }} transition={{ delay: 0.3 + i * 0.1, type: "spring" }}><Icon size={34} strokeWidth={1.4} /></motion.span>
@@ -124,7 +123,7 @@ function Modal({ p, onClose }) {
           <h3 className="serif">{p.n}</h3>
           <em className="m-tag serif">{p.tag}</em>
           <p>{p.about}</p>
-          <div className="m-stats">{p.stats.map(([a, b]) => <div key={b}><b>{a}</b><span>{b}</span></div>)}</div>
+          <div className="m-stats">{p.stats.map(([a, b]) => <div key={b}><b><CountText s={a} /></b><span>{b}</span></div>)}</div>
           <ul>{p.pts.map((x) => <li key={x}><Check size={14} />{x}</li>)}</ul>
           <div className="tags">{p.t.map((t) => <span className="tag" key={t}>{t}</span>)}</div>
           {p.url !== "#" && <a className="btn p" href={p.url} target="_blank" rel="noreferrer">Open live demo <ArrowUpRight size={14} /></a>}
@@ -138,6 +137,7 @@ function Modal({ p, onClose }) {
 }
 
 export function Work() {
+  const lite = useLite();
   const track = useRef(null);
   const [sel, setSel] = useState(null);
   const scroll = (d) => track.current.scrollBy({ left: d * 340, behavior: "smooth" });
@@ -150,8 +150,7 @@ export function Work() {
         <div className="car">
           <div className="track" ref={track} data-lenis-prevent-wheel>
             {PROJECTS.map((p, i) => (
-              <motion.div key={p.id} initial={{ opacity: 0, x: 80, rotateY: -35 }} whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
-                viewport={{ once: true }} transition={{ duration: 0.8, delay: i * 0.12, ease }} className="proj-w" style={{ transformPerspective: 1000 }}>
+              <motion.div key={p.id} {...rv(lite, { opacity: 0, x: 80, rotateY: -35 }, i)} className="proj-w">
                 <Tilt className="card proj" max={12} role="button" tabIndex={0} onClick={() => setSel(p)} onKeyDown={(e) => e.key === "Enter" && setSel(p)}>
                   <div className="thumb pop2">
                     {p.thumb ? <img src={p.thumb} alt={`${p.n} preview`} loading="lazy" /> : <Mock g={p.g} />}
@@ -176,13 +175,13 @@ export function Work() {
 }
 
 export function Services() {
+  const lite = useLite();
   return (
     <S3D id="services" className="wrap row">
       <Side label="Our Services" title="What we do." text="End-to-end product engineering, from idea to scale." />
       <div className="svc">
         {SERVICES.map(([Icon, t, d], i) => (
-          <motion.div key={t} initial={{ opacity: 0, y: 40, rotateX: -30 }} whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-            viewport={{ once: true }} transition={{ delay: i * 0.08, duration: 0.7, ease }} style={{ transformPerspective: 900 }}>
+          <motion.div key={t} {...rv(lite, { opacity: 0, y: 40, rotateX: -30 }, i)}>
             <Tilt className="card" max={14}>
               <Icon className="ic pop" size={30} strokeWidth={1.4} />
               <div className="pop2"><h4>{t}</h4><p>{d}</p></div>
@@ -196,6 +195,7 @@ export function Services() {
 }
 
 export function Approach() {
+  const lite = useLite();
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 0.85", "end 0.55"] });
   return (
@@ -204,8 +204,7 @@ export function Approach() {
       <div className="steps" ref={ref}>
         <motion.i className="fill" style={{ scaleX: scrollYProgress }} />
         {STEPS.map(([t, d], i) => (
-          <motion.div className="step" key={t} initial={{ opacity: 0, y: 30, rotateY: 40 }} whileInView={{ opacity: 1, y: 0, rotateY: 0 }}
-            viewport={{ once: true }} transition={{ delay: i * 0.15, duration: 0.7, ease }}>
+          <motion.div className="step" key={t} {...rv(lite, { opacity: 0, y: 30, rotateY: 40 }, i * 1.5)}>
             <b>{String(i + 1).padStart(2, "0")}</b><h4>{t}</h4><p>{d}</p>
           </motion.div>
         ))}
@@ -230,9 +229,9 @@ const Soc = ({ gh = "#", li = "#" }) => (
 );
 
 export function Team() {
+  const lite = useLite();
   const card = (f, wide) => (
-    <motion.div key={f.n} className={wide ? "wide" : ""} initial={{ opacity: 0, y: 60, rotateX: 25 }} whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-      viewport={{ once: true }} transition={{ duration: 0.8, ease }} style={{ transformPerspective: 1000 }}>
+    <motion.div key={f.n} className={wide ? "wide" : ""} {...rv(lite, { opacity: 0, y: 60, rotateX: 25 })}>
       <Tilt className="card fd" max={wide ? 4 : 9}>
         <Avatar src={f.img} name={f.n} />
         <div className="pop2 fd-b">
@@ -256,13 +255,13 @@ export function Team() {
 }
 
 export function Tech() {
+  const lite = useLite();
   return (
     <S3D className="wrap row">
       <Side label="Our Tech Stack" text="Tools and technologies we use to build reliable, scalable products." />
       <div className="tech">
         {TECH.map(([src, n, inv], i) => (
-          <motion.div key={n} initial={{ opacity: 0, rotateX: -80, y: 30 }} whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
-            viewport={{ once: true }} transition={{ delay: i * 0.04, duration: 0.7, ease }} style={{ perspective: 600 }}>
+          <motion.div key={n} {...rv(lite, { opacity: 0, rotateX: -80, y: 30 }, i * 0.4)}>
             <Tilt className="tk" max={22}>
               {src ? <img className={`pop ${inv ? "inv" : ""}`} src={src} alt={n} loading="lazy" /> : <MoreHorizontal className="pop" />}
               <em>{n}</em>
@@ -281,7 +280,7 @@ export function Reviews() {
   return (
     <S3D className="wrap row">
       <Side label="What People Say" title="Feedback from our clients." />
-      <div className="tst">
+      <div className={`tst ${REVIEWS.length < 2 ? "one" : ""}`}>
         <Tilt className="card quote" max={5}>
           <Quote className="pop" size={30} fill="currentColor" />
           <AnimatePresence mode="wait">
@@ -291,10 +290,12 @@ export function Reviews() {
             </motion.div>
           </AnimatePresence>
         </Tilt>
-        <div className="arrows h">
-          <button className="arr" aria-label="Previous" onClick={() => go(-1)}><ChevronLeft size={15} /></button>
-          <button className="arr" aria-label="Next" onClick={() => go(1)}><ChevronRight size={15} /></button>
-        </div>
+        {REVIEWS.length > 1 && (
+          <div className="arrows h">
+            <button className="arr" aria-label="Previous" onClick={() => go(-1)}><ChevronLeft size={15} /></button>
+            <button className="arr" aria-label="Next" onClick={() => go(1)}><ChevronRight size={15} /></button>
+          </div>
+        )}
       </div>
     </S3D>
   );
@@ -318,10 +319,10 @@ export function Blog() {
 }
 
 export function Contact() {
+  const lite = useLite();
   return (
     <div className="wrap" id="contact">
-      <motion.div className="cta glow-b" initial={{ opacity: 0, rotateX: 25, y: 60 }} whileInView={{ opacity: 1, rotateX: 0, y: 0 }}
-        viewport={{ once: true }} transition={{ duration: 0.9, ease }} style={{ transformPerspective: 1200 }}>
+      <motion.div className="cta glow-b" {...rv(lite, { opacity: 0, rotateX: 25, y: 60 })}>
         <div>
           <div className="eyebrow">Let’s build together</div>
           <h3 className="serif"><Words text="Have a project in mind?" /></h3>
